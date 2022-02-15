@@ -1,6 +1,6 @@
 from RPi import GPIO
 from time import sleep
-push= 5
+push= 5 """je peux le faire ?"""
 clk = 13
 dt = 6
 push2 = 26
