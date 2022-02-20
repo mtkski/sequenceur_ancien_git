@@ -1,5 +1,5 @@
-# import RPi.GPIO as GPIO
-# from Config_0 import Encodeur, Bouton, GEN, SEQ
+import RPi.GPIO as GPIO
+from Config_0 import Encodeur, Bouton, GEN, SEQ
 
 # Pour déterminer quel système de numérotation des pins on utilise
 GPIO.setmode(GPIO.BCM)
