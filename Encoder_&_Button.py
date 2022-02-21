@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from time import sleep
 from CONFIG import Encodeur, Bouton, GEN, SEQ
 
 # Pour déterminer quel système de numérotation des pins on utilise
@@ -24,12 +25,17 @@ class Encoder:
         clkvalue: object = GPIO.input(self.clk)
         dtvalue = GPIO.input(self.dt)
         actualvalue = [clkvalue, dtvalue]
+        if self.name == "encodeur_NOTE":
+            print(actualvalue)
+            if actualvalue != [1,1] :
+                print("STOOOOOOOOOOOOOOP !!!!")
 
         if self.sw is not None:
             buttonvalue = GPIO.input(self.sw)
             if buttonvalue != self.PreValue:
                 while not buttonvalue == 0:
                     buttonvalue = GPIO.input(self.sw)
+                sleep(0.2)
                 return "button pressed"
 
         elif actualvalue != self.LastValue:
@@ -54,43 +60,48 @@ class Encoder:
         if self.name == "encodeur_PARAM":
             if signe is None:
                 gen["actuel"][1] = (gen["actuel"][1] + 1) % 3
+                print("actuel est maintenant : {}".format(gen["actuel"][1]))
 
             elif actuel[1] == 1:
                 if 0 <= gen["long"] + float("{}1".format(signe)) <= 64:
                     if actuel[0] > gen["long"] + float("{}1".format(signe)):
                         gen["long"] += float("{}1".format(signe))
+                        print("long = {}".format(gen["long"]))
 
             elif actuel[1] == 2:
+                print(gen["bpm"] + float("{}25".format(signe)))
                 if 0 <= gen["bpm"] + float("{}25".format(signe)) <= 500:
                     gen["bpm"] += float("{}25".format(signe))
+                    print("bpm = {}".format(gen["bpm"]))
 
             elif actuel[1] == 3:
                 if 0 <= gen["gam"] + float("{}1".format(signe)) <= 3:
                     gen["gam"] += float("{}1".format(signe))
+                    print("gam = {}".format(gen["gam"]))
 
         elif self.name == "encodeur_NOTE":
-            if 1 <= seq["pas".format(actuel[0])]["note"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["note"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["note"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["note"] += float("{}204.8".format(signe))
 
         elif self.name == "encodeur_GATE":
-            if 1 <= seq["pas".format(actuel[0])]["gate"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["gate"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["gate"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["gate"] += float("{}204.8".format(signe))
 
         elif self.name == "encodeur_CV1":
-            if 1 <= seq["pas".format(actuel[0])]["cv1"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["cv1"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["cv1"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["cv1"] += float("{}204.8".format(signe))
 
         elif self.name == "encodeur_CV2":
-            if 1 <= seq["pas".format(actuel[0])]["cv2"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["cv2"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["cv2"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["cv2"] += float("{}204.8".format(signe))
 
         elif self.name == "encodeur_CV3":
-            if 1 <= seq["pas".format(actuel[0])]["cv3"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["cv3"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["cv3"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["cv3"] += float("{}204.8".format(signe))
 
         elif self.name == "encodeur_CV4":
-            if 1 <= seq["pas".format(actuel[0])]["cv4"] + float("{}204.8".format(signe)) <= 4096:
-                seq["pas".format(actuel[0])]["cv4"] += float("{}204.8".format(signe))
+            if 1 <= seq["pas{}".format(actuel[0])]["cv4"] + float("{}204.8".format(signe)) <= 4096:
+                seq["pas{}".format(actuel[0])]["cv4"] += float("{}204.8".format(signe))
 
         return gen, seq
 
@@ -126,7 +137,7 @@ class Button:
         elif self.name == "bouton_NEXT":
             if gen["actuel"][0] > 0:
                 gen["actuel"][0] -= 1
-
+        sleep(0.2)
         return gen
 
 
@@ -135,7 +146,7 @@ button_list = []
 for button_name in Bouton.keys():
     PIN = Bouton[button_name]
     GPIO.setup(PIN, GPIO.IN)
-    button = Bouton(button_name, PIN)
+    button = Button(button_name, PIN)
     button_list.append(button)
 
 # Crée une liste d'objet encoder et configure chaque canal comme entrée ou sortie pour les encodeurs
@@ -152,17 +163,24 @@ for encoder_name in Encodeur.keys():
     encoder_list.append(encoder)
 
 # Boucle
-while True:
+stop = 0
+while stop == 0:
     for encoder in encoder_list:
         if encoder.motion_sensor() == "button pressed":
+            print("button pressed")
             GEN, SEQ = encoder.dictionary_modification(None, GEN, SEQ)
 
         elif encoder.motion_sensor() == "rotated clockwise":
+            print("rotated clockwise")
             GEN, SEQ = encoder.dictionary_modification("+", GEN, SEQ)
+            stop = 1
 
         elif encoder.motion_sensor() == "rotated counter-clockwise":
+            print("rotated counter-clockwise")
             GEN, SEQ = encoder.dictionary_modification("-", GEN, SEQ)
+            stop = 1
 
     for button in button_list:
         if button.motion_sensor() == "button pressed":
+            print("button pressed")
             GEN = button.dictionary_modification(GEN)
