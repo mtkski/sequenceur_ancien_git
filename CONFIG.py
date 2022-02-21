@@ -7,7 +7,7 @@ for i in range(1,65):
 
 # SEQ['pas1']['note'] = 1 pour modifier (exemple)
 
-GEN = {"long":0, "bpm":0, "gamme":0}
+GEN = {"long":0, "bpm":0, "gamme":0, "actuel" : [1,1]}
 
 
 # pins et autres (adapter avec le produit de philippe)
@@ -15,7 +15,7 @@ GEN = {"long":0, "bpm":0, "gamme":0}
 # Définit les pins utilisés par les encodeurs
 Encodeur = {
     "encodeur_NOTE" : [5,6,None],
-    "encodeur_GATE" : [0,11,None],
+    "encodeur_GATE" : [10,11,None],
     "encodeur_CV1" : [20,21,None],
     "encodeur_CV2" : [12,16,None],
     "encodeur_CV3" : [8,7,None],

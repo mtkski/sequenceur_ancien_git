@@ -1,4 +1,5 @@
 import RPi.GPIO as GPIO
+from time import sleep
 from CONFIG import Encodeur, Bouton, GEN, SEQ
 
 # Pour déterminer quel système de numérotation des pins on utilise
@@ -30,6 +31,7 @@ class Encoder:
             if buttonvalue != self.PreValue:
                 while not buttonvalue == 0:
                     buttonvalue = GPIO.input(self.sw)
+                sleep(0.2)
                 return "button pressed"
 
         elif actualvalue != self.LastValue:
@@ -126,7 +128,7 @@ class Button:
         elif self.name == "bouton_NEXT":
             if gen["actuel"][0] > 0:
                 gen["actuel"][0] -= 1
-
+        sleep(0.2)
         return gen
 
 
@@ -135,7 +137,7 @@ button_list = []
 for button_name in Bouton.keys():
     PIN = Bouton[button_name]
     GPIO.setup(PIN, GPIO.IN)
-    button = Bouton(button_name, PIN)
+    button = Button(button_name, PIN)
     button_list.append(button)
 
 # Crée une liste d'objet encoder et configure chaque canal comme entrée ou sortie pour les encodeurs
