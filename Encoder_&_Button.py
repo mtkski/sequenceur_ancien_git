@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from Config_0 import Encodeur, Bouton, GEN, SEQ
+from CONFIG import Encodeur, Bouton, GEN, SEQ
 
 # Pour déterminer quel système de numérotation des pins on utilise
 GPIO.setmode(GPIO.BCM)
@@ -128,6 +128,7 @@ class Button:
                 gen["actuel"][0] -= 1
 
         return gen
+
 
 # Crée une liste d'objet button et configure chaque canal comme entrée ou sortie pour les boutons
 button_list = []
