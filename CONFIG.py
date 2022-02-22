@@ -4,23 +4,28 @@ for i in range(1,65):
     SEQ["pas"+str(i)] = PARAM
 
 # SEQ['pas1']['note'] = 1 pour modifier (exemple)
-
+"""
+<<<<<<< HEAD
+"""
 # actuel = (numéro du pas, le paramétre de l'encodeur PARAM (1,2 ou 3 pour long, bpm ou gamme))
 
 GEN = {"long":0, "bpm":0, "gamme":0, "actuel":[1,1]}
-
+"""======
+GEN = {"long":0, "bpm":0, "gamme":0, "actuel" : [1,1]}
+>>>>>>> c0fffd31fb2626f4b77d17dd666cf33834963a29
+"""
 
 # pins et autres (adapter avec le produit de philippe)
 
-# Définit les pins utilisés par les encodeurs
+# Définit les pins utilisés par les encodeurs (clk, dt, sw =None)
 Encodeur = {
+    "encodeur_PARAM" : [13,19,26],
     "encodeur_NOTE" : [5,6,None],
     "encodeur_GATE" : [10,11,None],
     "encodeur_CV1" : [20,21,None],
     "encodeur_CV2" : [12,16,None],
     "encodeur_CV3" : [8,7,None],
     "encodeur_CV4" : [24,25,None],
-    "encodeur_PARAM" : [13,19,26]
     }
 
 # Définit les valeurs initiales des encodeurs
@@ -34,10 +39,10 @@ interval = [(0,4096),(0,1),(0,4096),(0,4096),(0,4096),(0,4096),(0,4096)]
 
 # Définit les pins utilisés par les Boutons
 Bouton = {
-    "bouton_PLAYPAS" : 10,
-    "bouton_PLAY" : 22,
-    "bouton_PREV" : 27,
-    "bouton_NEXT" : 17,
+    "bouton_PLAYPAS" : 23,
+    "bouton_PLAY" : 18,
+    "bouton_PREV" : 15,
+    "bouton_NEXT" : 14,
         }
 
 # écran
