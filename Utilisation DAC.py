@@ -4,7 +4,7 @@ import time
 dac = Adafruit_MCP4725.MCP4725(address=0x60)
 
 while True:
-    for x in range(0,4097,int(4097/(12*5))):
+    for x in range(0,4096,int(4096/(12*5))):
         
         print(x)
         dac.set_voltage(x)
